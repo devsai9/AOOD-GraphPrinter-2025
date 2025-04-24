@@ -3,29 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Web Page</title>
+    <title>Graph Printer</title>
     <link rel="stylesheet" href="styles.css">
     <script src="script.js" defer></script>
 </head>
+
 <body>
-    <header>
-        <h1>Welcome to My Web Page</h1>
-    </header>
     <main>
-        <section>
-            <h2>About Me</h2>
-            <p>This is a brief introduction about myself.</p>
-        </section>
-        <section>
-            <h2>My Projects</h2>
-            <ul>
-                <li>Project 1</li>
-                <li>Project 2</li>
-                <li>Project 3</li>
-            </ul>
-        </section>
+        <div id="left-panel" class="panel">
+            <h1>Settings</h1>
+            <div>
+                <span>
+                    X-axis: 
+                    <input type="number" id="x-min" value="-5">
+                    ≤ x ≤
+                    <input type="number" id="x-max" value="5">
+                </span>
+                <br>
+                <span>
+                    Y-axis:
+                    <input type="number" id="y-min" value="-5">
+                    ≤ y ≤
+                    <input type="number" id="y-max" value="5">
+                </span>
+            </div>
+            <div>
+                <span>
+                    X Tick Interval:
+                    <input type="number" id="x-ticks" value="1">
+                </span>
+                <br>
+                <span>
+                    Y Tick Interval:
+                    <input type="number" id="y-ticks" value="1">
+                </span>
+            </div>
+            <div>
+                <span>
+                    X Annotate every:
+                    <input type="number" id="x-annotate-interval" value="1">
+                    ticks
+                </span>
+                <br>
+                <span>
+                    Y Annotate every:
+                    <input type="number" id="y-annotate-interval" value="1">
+                    ticks
+                </span>
+            </div>
+            <div>
+                <span>
+                    X-Axis Label: 
+                    <input type="text" id="x-axis-label" value="time (sec)">
+                </span>
+                <br>
+                <span>
+                    Y-Axis Label: 
+                    <input type="text" id="y-axis-label" value="height (m)">
+                </span>
+            </div>
+        </div>
+        <div id="right-panel" class="panel">
+            <h1>Cartesian Plane</h1>
+            <canvas id="myCanvas" width="200" height="100"></canvas>
+        </div>
     </main>
-    <footer>
-        <p>&copy; 2023 My Web Page</p>
-    </footer>
 </html>
