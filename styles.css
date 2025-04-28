@@ -35,6 +35,7 @@ main {
 
 #left-panel {
     background-color: red;
+    padding-left: 8px;
 }
 
 #right-panel {
@@ -55,6 +56,12 @@ input {
 input[type="text"] {
     --input-width: 120px;
     width: var(--input-width);
+}
+
+input[type="checkbox"] {
+    padding: 0;
+    margin-left: -24px;
+    margin-right: -20px;
 }
 
 canvas {
