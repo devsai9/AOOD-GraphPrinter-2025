@@ -47,8 +47,8 @@ function update() {
     if (parseInt(yAnnotate.value) < 1) yAnnotate.value = "1";
     
     const min = Math.min(rightPanel.offsetWidth, rightPanel.offsetHeight - rightPanel.children[0].offsetHeight)
-    canvas.width = min;
-    canvas.height = min;
+    canvas.width = min - 8;
+    canvas.height = min - 8;
     declareCanvasVars();
     if (parseInt(xMax.value) > parseInt(xMin.value) && parseInt(yMax.value) > parseInt(yMin.value)) {
         drawAxes();
