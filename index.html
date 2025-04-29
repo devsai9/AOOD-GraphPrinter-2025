@@ -30,24 +30,24 @@
             <div>
                 <span>
                     X Tick Interval:
-                    <input type="number" id="x-ticks" value="1">
+                    <input type="number" id="x-ticks" value="1" min="1">
                 </span>
                 <br>
                 <span>
                     Y Tick Interval:
-                    <input type="number" id="y-ticks" value="1">
+                    <input type="number" id="y-ticks" value="1" min="1">
                 </span>
             </div>
             <div>
                 <span>
                     X Annotate every:
-                    <input type="number" id="x-annotate-interval" value="1">
+                    <input type="number" id="x-annotate-interval" value="1" min="1">
                     ticks
                 </span>
                 <br>
                 <span>
                     Y Annotate every:
-                    <input type="number" id="y-annotate-interval" value="1">
+                    <input type="number" id="y-annotate-interval" value="1" min="1">
                     ticks
                 </span>
             </div>
@@ -64,11 +64,11 @@
             </div>
             <div>
                 <input type="checkbox" id="arrowCheckbox">
-                <label for="arrowCheckbox">End Arrows</label>
+                <label for="arrowCheckbox" class="checkboxLabel">End Arrows</label>
             </div>
             <div>
                 <input type="checkbox" id="radianCheckbox">
-                <label for="radianCheckbox">Radian Mode</label>
+                <label for="radianCheckbox" class="checkboxLabel">Radian Mode</label>
             </div>
         </div>
         <div id="right-panel" class="panel">

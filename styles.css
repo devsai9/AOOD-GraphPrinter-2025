@@ -12,7 +12,6 @@ body {
     margin: 0;
     padding: 0;
     overflow: hidden;
-    background-color: green;
 }
 
 h1 {
@@ -34,23 +33,29 @@ main {
 }
 
 #left-panel {
-    background-color: red;
     padding-left: 8px;
+    display: flex;
+    flex-direction: column;
+    /*align-items: center;*/
+    gap: 15px;
+}
+
+#left-panel > div > span {
+    user-select: none;
 }
 
 #right-panel {
-    background-color: blue;
     display: flex;
     flex-direction: column;
     align-items: center;
-    color: white;
 }
 
 input {
     width: var(--input-width);
-    padding: 5px;
+    padding: 4px;
     border-radius: 10px;
     border: 1px solid black;
+    margin-top: 2px;
 }
 
 input[type="text"] {
@@ -58,14 +63,56 @@ input[type="text"] {
     width: var(--input-width);
 }
 
-input[type="checkbox"] {
-    padding: 0;
-    margin-left: -24px;
-    margin-right: -20px;
-}
+/*input[type="checkbox"] {*/
+/*    padding: 0;*/
+/*    margin-left: -24px;*/
+/*    margin-right: -20px;*/
+/*}*/
 
 canvas {
     background-color: white;
+    border: 2px solid black;
     margin: 0;
     padding: 0;
+}
+
+/* Custom checkbox */
+:root {
+  --checkbox-border-color: black;
+  --checkbox-checked-color: #6c584c;
+  --checkbox-hover-color: #e3d3ca; /* #a98467; */
+}
+
+input[type="checkbox"] {
+    /*box-sizing: border-box;*/
+    width: 20px;
+    height: 20px;
+    /*margin: 4px;*/
+    padding: 0;
+    border: 2px solid var(--checkbox-border-color);
+    border-radius: 0.3rem;
+    appearance: none;
+    background-color: #fcfcfc;
+    outline: none;
+    transition: outline 0.1s;
+}
+
+input[type="checkbox"]:checked {
+  background-size: cover;
+  padding: 2px;
+  border-color: var(--checkbox-checked-color);
+  background-color: white /*var(--checkbox-checked-color)*/;
+  background-image: url('https://cdn3.iconfinder.com/data/icons/glypho-generic-icons/64/checkmark-big-512.png');
+}
+
+@media (hover: hover) {
+  input[type="checkbox"]:not(:disabled):hover {
+    background-color: var(--checkbox-hover-color);
+    outline: 6px solid var(--checkbox-hover-color);
+    transform: scale(1.05);
+  }
+}
+
+.checkboxLabel {
+    user-select: none;
 }
