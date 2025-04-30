@@ -86,6 +86,7 @@ input[type="checkbox"] {
     background-color: #fcfcfc;
     outline: none;
     transition: outline 0.1s;
+    cursor: pointer;
 }
 
 input[type="checkbox"]:checked {
@@ -104,7 +105,7 @@ div:has(> input[type="checkbox"]):has(> .checkboxLabel) {
 }
 
 @media (hover: hover) {
-    input[type="checkbox"]:not(:disabled):hover {
+    input[type="checkbox"]:not(:disabled):hover, input[type="checkbox"]:not(:disabled):focus-visible {
         background-color: var(--checkbox-hover-color);
         outline: 6px solid var(--checkbox-hover-color);
         /*transform: scale(1.05);*/
@@ -114,6 +115,7 @@ div:has(> input[type="checkbox"]):has(> .checkboxLabel) {
 .checkboxLabel {
     user-select: none;
     margin-bottom: 2px;
+    cursor: pointer;
 }
 
 /* -----------
