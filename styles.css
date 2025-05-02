@@ -67,11 +67,25 @@ input[type="text"] {
     width: var(--input-width);
 }
 
+button {
+    background: #efefef;
+    padding: 5px 10px;
+    border-radius: 10px;
+    border: 1px solid black;
+    margin-top: 2px;
+    cursor: pointer;
+    transition: background 0.2s linear;
+}
+
+button:hover {
+    background: #d3d3d3;
+}
+
 /* Custom checkbox */
 :root {
     --checkbox-border-color: black;
     --checkbox-checked-color: #6c584c;
-    --checkbox-hover-color: #e3d3ca; /* #a98467; */
+    --checkbox-hover-color: #d3d3d3; /* #a98467; */
 }
 
 input[type="checkbox"] {

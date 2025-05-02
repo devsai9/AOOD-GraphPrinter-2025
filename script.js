@@ -21,6 +21,10 @@ const xMax = document.getElementById("x-max");
 const yMin = document.getElementById("y-min");
 const yMax = document.getElementById("y-max");
 
+const quadrant1Btn = document.getElementById("quadrant1Btn");
+const quadrant14Btn = document.getElementById("quadrant14Btn");
+
+
 const xTicks = document.getElementById("x-ticks");
 const yTicks = document.getElementById("y-ticks");
 
@@ -33,27 +37,39 @@ const yLabel = document.getElementById("y-label");
 const arrowCheckbox = document.getElementById("arrowCheckbox");
 const radianCheckbox = document.getElementById("radianCheckbox");
 
+
+
 // Event listeners
 document.querySelectorAll("input").forEach((elem) => elem.addEventListener("input", update));
 // document.querySelectorAll("input[min=\"1\"]")
 window.addEventListener("resize", update);
+quadrant1Btn.addEventListener("click", function(){
+    xMin.value = "-1";
+    yMin.value = "-1";
+    update();
+});
+quadrant14Btn.addEventListener("click", function(){
+    xMin.value = "-1";
+    yMin.value = -1*yMax.value;
+    update();
+});
 
 // Function
 update();
 function update() {
-    if (parseInt(xTicks.value) < 1) xTicks.value = "1";
-    if (parseInt(yTicks.value) < 1) yTicks.value = "1";
-    if (parseInt(xAnnotate.value) < 1) xAnnotate.value = "1";
-    if (parseInt(yAnnotate.value) < 1) yAnnotate.value = "1";
+    if (parseFloat(xTicks.value) < 0) xTicks.value = "1";
+    if (parseFloat(yTicks.value) < 0) yTicks.value = "1";
+    if (parseFloat(xAnnotate.value) < 0) xAnnotate.value = "1";
+    if (parseFloat(yAnnotate.value) < 0) yAnnotate.value = "1";
     
     const min = Math.min(rightPanel.offsetWidth, rightPanel.offsetHeight - rightPanel.children[0].offsetHeight)
     canvas.width = min - 8;
     canvas.height = min - 8;
     declareCanvasVars();
-    if (parseInt(xMax.value) > parseInt(xMin.value) && parseInt(yMax.value) > parseInt(yMin.value)) {
+    if (parseFloat(xMax.value) > parseFloat(xMin.value) && parseFloat(yMax.value) > parseFloat(yMin.value)) {
         drawAxes();
         // Only draw ticks if axes are drawn
-        if (parseInt(xTicks.value) > 0 && parseInt(yTicks.value) > 0) drawTicks();
+        if (parseFloat(xTicks.value) > 0 && parseFloat(yTicks.value) > 0) drawTicks();
     }
     if (arrowCheckbox.checked){
         drawArrows();
@@ -161,11 +177,11 @@ function drawArrows(){
 function drawTicks() {
     ctx.fillStyle = "rgb(0, 0, 0)";
     
-    const xTickInterval = parseInt(xTicks.value);
-    const yTickInterval = parseInt(yTicks.value);
+    const xTickInterval = parseFloat(xTicks.value);
+    const yTickInterval = parseFloat(yTicks.value);
     
-    const xNumericRange = parseInt(xMax.value) - parseInt(xMin.value);
-    const yNumericRange = parseInt(yMax.value) - parseInt(yMin.value);
+    const xNumericRange = parseFloat(xMax.value) - parseFloat(xMin.value);
+    const yNumericRange = parseFloat(yMax.value) - parseFloat(yMin.value);
     
     let xTickBound = xRadius - tickOffset; // basically, since we want a little padding to not go to the end of the axis
     let yTickBound = yRadius - tickOffset;
@@ -176,13 +192,18 @@ function drawTicks() {
     const xAnnotateEvery = parseInt(xAnnotate.value);
     const yAnnotateEvery = parseInt(yAnnotate.value);
     
+    // error check for number of ticks
+    if (xNumericRange / xTickInterval >= 25 || yNumericRange / yTickInterval >= 25) {
+        alert("Please adjust the number of ticks as it is too much");
+    }
+    
     let xAxisLocation = 0; // this is a y value lmao
     if (0 <= yMin.value) xAxisLocation = centerY + yTickBound; // everything is positive, position bottom
     else if (yMax.value <= 0) xAxisLocation = centerY - yTickBound; // everything nevative, position top
     else {
         // zero is in between
-        let mx = parseInt(yMax.value);
-        let mn = -parseInt(yMin.value);
+        let mx = parseFloat(yMax.value);
+        let mn = -parseFloat(yMin.value);
         
         let zeroProp = mn / (mx + mn);
         let range = 2 * yTickBound;
@@ -190,10 +211,33 @@ function drawTicks() {
     }
     console.log("xAxisLocation", xAxisLocation);
     
+    let yAxisLocation = 0; // this is a x-value
+    if (0 <= parseFloat(xMin.value)) yAxisLocation = centerX - xTickBound; // left of page
+    else if (parseFloat(xMax.value) <= 0) yAxisLocation = centerX + xTickBound; // right of page
+    else {
+        // zero is in between
+        let mx = parseFloat(xMax.value);
+        let mn = -parseFloat(xMin.value);
+        
+        let zeroProp = mn / (mx + mn);
+        let range = 2 * xTickBound;
+        yAxisLocation = centerX - xTickBound + zeroProp * range;
+        console.log("y axis on screen");
+    }
+    console.log("yAxisLocation", yAxisLocation);
+    
+    // function to easily scale the numerical value, to the location on canvas
+    let scale = (a) => 
+        (a - parseFloat(xMin.value)) / (parseFloat(xMax.value) - parseFloat(xMin.value)) 
+        * 2 * xTickBound + (centerX - xTickBound);
+    console.log("scale min", scale(parseFloat(xMin.value)), "centerX - xTickBound)", centerX - xTickBound);
+    
     // Draws the ticks on the x axis
-    let curX = parseInt(xMin.value);
-    let annotateCounter = 0;
-    for (let i = (centerX - xTickBound); i <= (centerX + xTickBound); i += xCanvasFrequency) {
+    let startX = Math.ceil(parseFloat(xMin.value) / xTickInterval) * xTickInterval;
+    let endX = Math.min(parseFloat(xMax.value) / xTickInterval) * xTickInterval;
+    let xAnnoFreq = xAnnotateEvery * xTickInterval;
+    for (let curX = startX; curX <= endX; curX += 1) {
+        let i = scale(curX);
         if (curX != 0) {
             // draw ticks
             let tickLength = 20;
@@ -203,32 +247,22 @@ function drawTicks() {
             ctx.stroke();
             
             // draw labels
-            if (annotateCounter % xAnnotateEvery == 0) {
+            let onAxis = Math.abs(i - yAxisLocation) <= 0.001;
+
+            let residue = curX / xAnnoFreq - Math.floor(curX / xAnnoFreq);
+            if (residue <= 0.001 && !onAxis) {
                 ctx.font = "16px serif";
                 ctx.fillText(curX, i, xAxisLocation - tickLength);
+                ctx.textAlign = "center";
+                console.log("label drawn at ", curX);
             }
         }
+        if (curX == endX) break;
         curX += xTickInterval;
-        annotateCounter += 1;
     }
     
-    let yAxisLocation = 0; // this is a x-value
-    if (0 <= parseInt(xMin.value)) yAxisLocation = centerX - xTickBound; // left of page
-    else if (parseInt(xMax.value) <= 0) yAxisLocation = centerX + xTickBound; // right of page
-    else {
-        // zero is in between
-        let mx = parseInt(xMax.value);
-        let mn = -parseInt(xMin.value);
-        
-        let zeroProp = mn / (mx + mn);
-        let range = 2 * xTickBound;
-        yAxisLocation = centerX - xTickBound + zeroProp * range;
-        console.log("y axis on screen");
-    }
-    console.log("yAxisLocation", yAxisLocation);
-    
-    let curY = parseInt(yMin.value);
-    annotateCounter = 0;
+    let curY = parseFloat(yMin.value);
+    let yAnnoFreq = yAnnotateEvery * yTickInterval;
     // Draws the ticks on the y axis
     for (let i = (centerY + yTickBound); i >= (centerY - yTickBound); i -= yCanvasFrequency) {
         if (curY != 0) {
@@ -240,13 +274,16 @@ function drawTicks() {
             ctx.stroke();
             
             // draw labels
-            if (annotateCounter % yAnnotateEvery == 0) {
+            let onAxis = Math.abs(i -xAxisLocation) <= 0.001;
+
+            let residue = curY / yAnnoFreq - Math.floor(curY / yAnnoFreq);
+            if (residue <= 0.001 && !onAxis) {
                 ctx.font = "16px serif";
                 ctx.fillText(curY, yAxisLocation + tickLength, i);
+                ctx.textAlign = "center";
             }
         }
         curY += yTickInterval;
-        annotateCounter += 1;
     }
 }
 
