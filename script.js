@@ -7,13 +7,14 @@ const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
 // Global variables
-const lineWidth = 1;
-const padding = 20;
+const lineWidth = 2;
+const padding = 30;
 const tickOffset = 15;
-let xRadius = canvas.width / 2 - padding;
-let yRadius = canvas.height / 2 - padding;
-let centerX = canvas.width / 2;
-let centerY = canvas.height / 2;
+const dpr = window.devicePixelRatio;
+let xRadius = canvas.width * dpr / 2 - padding;
+let yRadius = canvas.height * dpr / 2 - padding;
+let centerX = canvas.width * dpr / 2;
+let centerY = canvas.height * dpr / 2;
 
 // Global (mathematical) variables
 let xAxisLocation = 0;
@@ -47,7 +48,8 @@ const yLabel = document.getElementById("y-label");
 
 const arrowCheckbox = document.getElementById("arrowCheckbox");
 const gridLinesCheckbox = document.getElementById("gridCheckbox");
-const radianCheckbox = document.getElementById("radianCheckbox");
+const radianCheckboxX = document.getElementById("radianCheckboxX");
+const radianCheckboxY = document.getElementById("radianCheckboxY");
 
 
 
@@ -62,7 +64,7 @@ quadrant1Btn.addEventListener("click", function(){
 });
 quadrant14Btn.addEventListener("click", function(){
     xMin.value = "-1";
-    yMin.value = -1*yMax.value;
+    yMin.value = -yMax.value;
     update();
 });
 
@@ -75,8 +77,11 @@ function update() {
     if (parseFloat(yAnnotate.value) < 0) yAnnotate.value = "1";
     
     const min = Math.min(rightPanel.offsetWidth, rightPanel.offsetHeight - rightPanel.children[0].offsetHeight)
-    canvas.width = min - 8;
-    canvas.height = min - 8;
+    const dpr = window.devicePixelRatio;
+    canvas.width = (min - 8) * dpr;
+    canvas.height = (min - 8) * dpr;
+    canvas.style.width = `${min - 8}px`;
+    canvas.style.height = `${min - 8}px`;
     declareCanvasVars();
     if (parseFloat(xMax.value) > parseFloat(xMin.value) && parseFloat(yMax.value) > parseFloat(yMin.value)) {
         // calculateTickLocations();
@@ -98,6 +103,7 @@ function declareCanvasVars() {
     // lineWidth = 1;
     // padding = 5
     //padding = 15;
+    const dpr = window.devicePixelRatio;
     xRadius = canvas.width / 2 - padding;
     yRadius = canvas.height / 2 - padding;
     // xRadius = canvas.width / 2
@@ -128,23 +134,23 @@ function drawAxes() {
     // X axis
     if (0 <= yMin.value) {
         // everything is positive, draw at bottom
-        ctx.fillRect(centerX - xRadius, (yRadius - tickOffset) * 2 + tickOffset + padding, 2 * (xRadius), lineWidth);
+        ctx.fillRect(centerX - xRadius, (yRadius - tickOffset) * 2 + tickOffset + padding + lineWidth / 2, 2 * (xRadius), lineWidth);
     } else if (yMax.value <= 0) {
         // everything is negative, draw at top
-        ctx.fillRect(centerX - xRadius, tickOffset + padding, 2 * (xRadius), lineWidth);
+        ctx.fillRect(centerX - xRadius, tickOffset + padding + lineWidth / 2, 2 * (xRadius), lineWidth);
     } else {
-        ctx.fillRect(centerX - xRadius, yMax.value * (yRadius - tickOffset) * 2 / (yMax.value - yMin.value) + tickOffset + padding, 2 * (xRadius), lineWidth);
+        ctx.fillRect(centerX - xRadius, yMax.value * (yRadius - tickOffset) * 2 / (yMax.value - yMin.value) + tickOffset + padding - lineWidth / 2, 2 * (xRadius), lineWidth);
     }
     
     // Y axis
     if (0 <= xMin.value) {
         // positive, draw at left
-        ctx.fillRect(tickOffset + padding, centerY - yRadius, lineWidth, 2 * (yRadius));
+        ctx.fillRect(tickOffset + padding - lineWidth / 2, centerY - yRadius, lineWidth, 2 * (yRadius));
     } else if (xMax.value <= 0) {
         // negative, draw at right
-        ctx.fillRect((xRadius - tickOffset) * 2 + tickOffset + padding, centerY - yRadius, lineWidth, 2 * (yRadius));
+        ctx.fillRect((xRadius - tickOffset) * 2 + tickOffset + padding - lineWidth / 2, centerY - yRadius, lineWidth, 2 * (yRadius));
     } else {
-        ctx.fillRect(-xMin.value * (xRadius - tickOffset) * 2 / (xMax.value - xMin.value) + tickOffset + padding, centerY - yRadius, lineWidth, 2 * (yRadius));
+        ctx.fillRect(-xMin.value * (xRadius - tickOffset) * 2 / (xMax.value - xMin.value) + tickOffset + padding - lineWidth / 2, centerY - yRadius, lineWidth, 2 * (yRadius));
     }
     //console.log("Y axis x: " + (-xMin.value * xRadius * 2 / (xMax.value - xMin.value)));
 }
@@ -152,7 +158,8 @@ function drawAxes() {
 // Need to make sure that arrows align with the axes again
 function drawArrows(){
     // draw arrows
-    const arrowSize = canvas.width / 100;
+    //const arrowSize = canvas.width / 100;
+    const arrowSize = 10;
     
     // //Right arrow
     // ctx.beginPath();
@@ -165,45 +172,61 @@ function drawArrows(){
     if (yMin.value >= 0) {
         // Right Arrow
         ctx.beginPath();
-        ctx.moveTo(centerX + xRadius+.5, centerY + yRadius - tickOffset + 0.5);
-        ctx.lineTo(centerX + xRadius - arrowSize+.5, centerY + yRadius - arrowSize - tickOffset + 0.5);
-        ctx.lineTo(centerX + xRadius - arrowSize+.5, centerY + yRadius + arrowSize - tickOffset + 0.5);
+        ctx.moveTo(centerX + xRadius + arrowSize, 2 * centerY - padding - tickOffset);
+        ctx.lineTo(centerX + xRadius, 2 * centerY - arrowSize - padding - tickOffset);
+        ctx.lineTo(centerX + xRadius, 2 * centerY + arrowSize - padding - tickOffset);
         ctx.fill();
         // Left Arrow
         ctx.beginPath();
-        ctx.moveTo(centerX - xRadius +.5, centerY + yRadius - tickOffset + 0.5);
-        ctx.lineTo(centerX - xRadius + arrowSize+.5, centerY + yRadius - arrowSize - tickOffset + 0.5);
-        ctx.lineTo(centerX - xRadius + arrowSize+.5, centerY + yRadius + arrowSize - tickOffset + 0.5);
+        ctx.moveTo(centerX - xRadius - arrowSize, 2 * centerY - tickOffset);
+        ctx.lineTo(centerX - xRadius, 2 * centerY - arrowSize - tickOffset);
+        ctx.lineTo(centerX - xRadius, 2 * centerY + arrowSize - tickOffset);
         ctx.fill();
     }
     else if (yMax.value <= 0) {
         // Right Arrow
         ctx.beginPath();
-        ctx.moveTo(centerX + xRadius+.5, centerY - yRadius + tickOffset + .5);
-        ctx.lineTo(centerX + xRadius - arrowSize+.5, centerY - yRadius - arrowSize + tickOffset + .5);
-        ctx.lineTo(centerX + xRadius - arrowSize+.5, centerY - yRadius + arrowSize + tickOffset + .5);
+        ctx.moveTo(centerX + xRadius + arrowSize, centerY - yRadius + tickOffset);
+        ctx.lineTo(centerX + xRadius, centerY - yRadius - arrowSize + tickOffset);
+        ctx.lineTo(centerX + xRadius, centerY - yRadius + arrowSize + tickOffset);
         ctx.fill();
         // Left Arrow
         ctx.beginPath();
-        ctx.moveTo(centerX - xRadius+.5, centerY - yRadius + tickOffset + .5);
-        ctx.lineTo(centerX - xRadius + arrowSize+.5, centerY - yRadius - arrowSize + tickOffset + .5);
-        ctx.lineTo(centerX - xRadius + arrowSize+.5, centerY - yRadius + arrowSize + tickOffset + .5);
+        ctx.moveTo(centerX - xRadius - arrowSize, centerY - yRadius + tickOffset);
+        ctx.lineTo(centerX - xRadius, centerY - yRadius - arrowSize + tickOffset);
+        ctx.lineTo(centerX - xRadius, centerY - yRadius + arrowSize + tickOffset);
         ctx.fill();
     }
+    
+    // yMax.value * (yRadius - tickOffset) * 2 / (yMax.value - yMin.value) + tickOffset + padding
+    // 
     
     else {
         // Right Arrow
         ctx.beginPath();
-        ctx.moveTo(centerX + xRadius + 0.5, yMax.value * (yRadius - tickOffset) * 2 / (yMax.value - yMin.value) + tickOffset + padding + 0.5);
-        ctx.lineTo(centerX + xRadius - arrowSize + 0.5, yMax.value * (yRadius -  tickOffset) * 2 / (yMax.value - yMin.value) - arrowSize + tickOffset + padding + 0.5);
-        ctx.lineTo(centerX + xRadius - arrowSize + 0.5, yMax.value * (yRadius -  tickOffset) * 2 / (yMax.value - yMin.value) + arrowSize + tickOffset + padding + 0.5);
+        ctx.moveTo(centerX + xRadius + arrowSize, yMax.value * (yRadius - tickOffset) * 2 / (yMax.value - yMin.value) + tickOffset + padding);
+        ctx.lineTo(centerX + xRadius, yMax.value * (yRadius -  tickOffset) * 2 / (yMax.value - yMin.value) - arrowSize + tickOffset + padding);
+        ctx.lineTo(centerX + xRadius, yMax.value * (yRadius -  tickOffset) * 2 / (yMax.value - yMin.value) + arrowSize + tickOffset + padding);
         ctx.fill();
         // Left Arrow
         ctx.beginPath();
-        ctx.moveTo(centerX - xRadius + 0.5, yMax.value * (yRadius - tickOffset) * 2 / (yMax.value - yMin.value) + tickOffset + padding + 0.5);
-        ctx.lineTo(centerX - xRadius + arrowSize + 0.5, yMax.value * (yRadius -  tickOffset) * 2 / (yMax.value - yMin.value) - arrowSize + tickOffset + padding + 0.5);
-        ctx.lineTo(centerX - xRadius + arrowSize + 0.5, yMax.value * (yRadius -  tickOffset) * 2 / (yMax.value - yMin.value) + arrowSize + tickOffset + padding + 0.5);
+        ctx.moveTo(centerX - xRadius - arrowSize, yMax.value * (yRadius - tickOffset) * 2 / (yMax.value - yMin.value) + tickOffset + padding);
+        ctx.lineTo(centerX - xRadius, yMax.value * (yRadius -  tickOffset) * 2 / (yMax.value - yMin.value) - arrowSize + tickOffset + padding);
+        ctx.lineTo(centerX - xRadius, yMax.value * (yRadius -  tickOffset) * 2 / (yMax.value - yMin.value) + arrowSize + tickOffset + padding);
         ctx.fill();
+        
+        // // Right Arrow
+        // ctx.beginPath();
+        // ctx.moveTo(centerX + xRadius + arrowSize, yMax.value * (yRadius + padding - tickOffset) * 2 / (yMax.value - yMin.value) + tickOffset + padding);
+        // ctx.lineTo(centerX + xRadius, yMax.value * (yRadius + padding - tickOffset) * 2 / (yMax.value - yMin.value) - arrowSize + tickOffset + padding);
+        // ctx.lineTo(centerX + xRadius, yMax.value * (yRadius + padding - tickOffset) * 2 / (yMax.value - yMin.value) + arrowSize + tickOffset + padding);
+        // ctx.fill();
+        // // Left Arrow
+        // ctx.beginPath();
+        // ctx.moveTo(centerX - xRadius - arrowSize, yMax.value * (yRadius + padding) * 2 / (yMax.value - yMin.value));
+        // ctx.lineTo(centerX - xRadius, yMax.value * (yRadius + padding) * 2 / (yMax.value - yMin.value) - arrowSize);
+        // ctx.lineTo(centerX - xRadius, yMax.value * (yRadius + padding) * 2 / (yMax.value - yMin.value) + arrowSize);
+        // ctx.fill();
     }
     
     
@@ -211,46 +234,46 @@ function drawArrows(){
     if (xMin.value >= 0) {
         // Top Arrow
         ctx.beginPath();
-        ctx.moveTo(centerX - xRadius + tickOffset + 0.5, centerY - yRadius + 0.5);
-        ctx.lineTo(centerX - xRadius - arrowSize + tickOffset + 0.5, centerY - yRadius + arrowSize + 0.5);
-        ctx.lineTo(centerX - xRadius + arrowSize + tickOffset + 0.5, centerY - yRadius + arrowSize + 0.5);
+        ctx.moveTo(centerX - xRadius + tickOffset, centerY - yRadius);
+        ctx.lineTo(centerX - xRadius - arrowSize + tickOffset, centerY - yRadius + arrowSize + 0.5);
+        ctx.lineTo(centerX - xRadius + arrowSize + tickOffset, centerY - yRadius + arrowSize + 0.5);
         ctx.fill();
         // Bottom Arrow
         ctx.beginPath();
-        ctx.moveTo(centerX - xRadius + tickOffset + 0.5, centerY + yRadius + 0.5);
-        ctx.lineTo(centerX - xRadius - arrowSize + tickOffset + 0.5, centerY + yRadius - arrowSize + 0.5);
-        ctx.lineTo(centerX - xRadius + arrowSize + tickOffset + 0.5, centerY + yRadius - arrowSize + 0.5);
+        ctx.moveTo(centerX - xRadius + tickOffset, centerY + yRadius);
+        ctx.lineTo(centerX - xRadius - arrowSize + tickOffset, centerY + yRadius - arrowSize);
+        ctx.lineTo(centerX - xRadius + arrowSize + tickOffset, centerY + yRadius - arrowSize);
         ctx.fill();
     }
     
     else if (xMax.value <= 0) {
         // Top Arrow
         ctx.beginPath();
-        ctx.moveTo(centerX + xRadius - tickOffset + 0.5, centerY - yRadius + 0.5);
-        ctx.lineTo(centerX + xRadius - arrowSize - tickOffset + 0.5, centerY - yRadius + arrowSize + 0.5);
-        ctx.lineTo(centerX + xRadius + arrowSize - tickOffset + 0.5, centerY - yRadius + arrowSize + 0.5);
+        ctx.moveTo(centerX + xRadius - tickOffset, centerY - yRadius);
+        ctx.lineTo(centerX + xRadius - arrowSize - tickOffset, centerY - yRadius + arrowSize);
+        ctx.lineTo(centerX + xRadius + arrowSize - tickOffset, centerY - yRadius + arrowSize);
         ctx.fill();
         // Bottom Arrow
         ctx.beginPath();
-        ctx.moveTo(centerX + xRadius - tickOffset + 0.5, centerY + yRadius + 0.5);
-        ctx.lineTo(centerX + xRadius - arrowSize - tickOffset + 0.5, centerY + yRadius - arrowSize + 0.5);
-        ctx.lineTo(centerX + xRadius + arrowSize - tickOffset + 0.5, centerY + yRadius - arrowSize + 0.5);
+        ctx.moveTo(centerX + xRadius - tickOffset, centerY + yRadius);
+        ctx.lineTo(centerX + xRadius - arrowSize - tickOffset, centerY + yRadius - arrowSize);
+        ctx.lineTo(centerX + xRadius + arrowSize - tickOffset, centerY + yRadius - arrowSize);
         ctx.fill();
     }
     
     else {
         // Top arrow
         ctx.beginPath();
-        ctx.moveTo(-xMin.value * (xRadius - tickOffset) * 2 / (xMax.value - xMin.value) + tickOffset + padding + 0.5, centerY - yRadius - 0.5);
-        ctx.lineTo(-xMin.value * (xRadius - tickOffset) * 2 / (xMax.value - xMin.value) - arrowSize + tickOffset + padding + 0.5, centerY - yRadius + arrowSize - 0.5);
-        ctx.lineTo(-xMin.value * (xRadius - tickOffset) * 2 / (xMax.value - xMin.value) + arrowSize + tickOffset + padding + 0.5, centerY - yRadius + arrowSize - 0.5);
+        ctx.moveTo(-xMin.value * (xRadius - tickOffset) * 2 / (xMax.value - xMin.value) + tickOffset + padding, centerY - yRadius);
+        ctx.lineTo(-xMin.value * (xRadius - tickOffset) * 2 / (xMax.value - xMin.value) - arrowSize + tickOffset + padding, centerY - yRadius + arrowSize);
+        ctx.lineTo(-xMin.value * (xRadius - tickOffset) * 2 / (xMax.value - xMin.value) + arrowSize + tickOffset + padding, centerY - yRadius + arrowSize);
         ctx.fill();
         
         // Bottom arrow
         ctx.beginPath();
-        ctx.moveTo(-xMin.value * (xRadius - tickOffset) * 2 / (xMax.value - xMin.value) + tickOffset + padding + 0.5, centerY + yRadius + 0.5);
-        ctx.lineTo(-xMin.value * (xRadius - tickOffset) * 2 / (xMax.value - xMin.value) - arrowSize + tickOffset + padding + 0.5, centerY + yRadius - arrowSize + 0.5);
-        ctx.lineTo(-xMin.value * (xRadius - tickOffset) * 2 / (xMax.value - xMin.value) + arrowSize + tickOffset + padding + 0.5, centerY + yRadius - arrowSize + 0.5);
+        ctx.moveTo(-xMin.value * (xRadius - tickOffset) * 2 / (xMax.value - xMin.value) + tickOffset + padding, centerY + yRadius);
+        ctx.lineTo(-xMin.value * (xRadius - tickOffset) * 2 / (xMax.value - xMin.value) - arrowSize + tickOffset + padding, centerY + yRadius - arrowSize);
+        ctx.lineTo(-xMin.value * (xRadius - tickOffset) * 2 / (xMax.value - xMin.value) + arrowSize + tickOffset + padding, centerY + yRadius - arrowSize);
         ctx.fill();
     }
     
@@ -275,8 +298,8 @@ function calculateTickLocations() {
     
     // error check for number of ticks
     if (xNumericRange / xTickInterval >= 25 || yNumericRange / yTickInterval >= 25) {
-        alert("Please adjust the number of ticks as it is too much");
-        return;
+        // alert("Please adjust the number of ticks as it is too much");
+        // return;
     }
     
     xAxisLocation = 0; // this is a y value lmao
@@ -334,7 +357,22 @@ function calculateTickLocations() {
     }
 }
 
-// draws the ticks and the labels
+function gcd(a, b) {
+    if (a < 0) a = -a;
+    if (b < 0) b = -b;
+    
+    if (a == 0) return b;
+    if (b == 0) return a;
+    
+    if (a < b) {
+        let temp = a;
+        a = b;
+        b = temp;
+    }
+    return gcd(a % b, b);
+}
+
+// draws the ticks and the annotations
 function drawTicks() {
     ctx.fillStyle = "rgb(0, 0, 0)";
     ctx.strokeStyle = "rgb(0,0,0)";
@@ -347,8 +385,8 @@ function drawTicks() {
         if (xVal != 0) {
             // draw ticks
             ctx.beginPath();
-            ctx.moveTo(i, xAxisLocation - tickLength * 0.5);
-            ctx.lineTo(i, xAxisLocation + tickLength * 0.5);
+            ctx.moveTo(i + 1, xAxisLocation - tickLength * 0.5);
+            ctx.lineTo(i + 1, xAxisLocation + tickLength * 0.5);
             ctx.stroke();
             
             // draw labels
@@ -359,8 +397,33 @@ function drawTicks() {
             // console.log("residue at ", curX, ": ", residue);
             if (residue <= 0.001 && !onAxis) {
                 ctx.textAlign = "center";
-                ctx.font = "16px serif";
-                ctx.fillText(Math.round(xVal * 1000) / 1000, i, xAxisLocation - tickLength);
+                ctx.font = (canvas.width * 0.05)+"px serif";
+                if((canvas.width * 0.05)>=20){
+                    ctx.font = "20px serif";
+                }
+                if (radianCheckboxX.checked) {
+                    let numerator = Math.round(xVal * 1000);
+                    let denominator = 1000;
+                    let d = gcd(numerator, denominator);
+                    numerator /= d;
+                    denominator /= d;
+                    numerator = Math.abs(numerator);
+                    denominator = Math.abs(denominator);
+                    let text = "";
+                    if (numerator == 1 && denominator == 1) {
+                        text = "π";
+                    } else if (numerator == 1) {
+                        text = "π/" + denominator;
+                    } else if (denominator == 1) {
+                        text = numerator + "π";
+                    } else {
+                        text = numerator + "π/" + denominator;
+                    }
+                    if (xVal < 0) text = "-" + text;
+                    ctx.fillText(text, i, xAxisLocation - tickLength);
+                } else {
+                    ctx.fillText(Math.round(xVal * 1000) / 1000, i, xAxisLocation - tickLength);
+                }
                 // console.log("label drawn at ", curX);
             }
         }
@@ -373,8 +436,8 @@ function drawTicks() {
         if (yVal != 0) {
             // draw ticks
             ctx.beginPath();
-            ctx.moveTo(yAxisLocation - tickLength * 0.5, i);
-            ctx.lineTo(yAxisLocation + tickLength * 0.5, i);
+            ctx.moveTo(yAxisLocation - tickLength * 0.5, i + 1);
+            ctx.lineTo(yAxisLocation + tickLength * 0.5, i + 1);
             ctx.stroke();
             
             // draw labels
@@ -384,11 +447,34 @@ function drawTicks() {
             if (residue > 0.5) residue = 1 - residue;
 
             if (residue <= 0.001 && !onAxis) {
-                ctx.textAlign = "center";
-                ctx.font = "16px serif";
+                ctx.textAlign = "left";
+                ctx.textBaseline = "middle";
                 
-                ctx.fillText(Math.round(yVal * 1000) / 1000, yAxisLocation + tickLength, i);
-                // console.log("label drawn at ", curX);
+                
+                if (radianCheckboxY.checked) {
+                    let numerator = Math.round(yVal * 1000);
+                    let denominator = 1000;
+                    let d = gcd(numerator, denominator);
+                    numerator /= d;
+                    denominator /= d;
+                    let sign = numerator / Math.abs(numerator);
+                    numerator = Math.abs(numerator);
+                    denominator = Math.abs(denominator);
+                    let text = "";
+                    if (numerator == 1 && denominator == 1) {
+                        text = "π";
+                    } else if (numerator == 1) {
+                        text = "π/" + denominator;
+                    } else if (denominator == 1) {
+                        text = numerator + "π";
+                    } else {
+                        text = numerator + "π/" + denominator;
+                    }
+                    if (yVal < 0) text = "-" + text;
+                    ctx.fillText(text, yAxisLocation + tickLength, i);
+                } else {
+                    ctx.fillText(Math.round(yVal * 1000) / 1000, yAxisLocation + tickLength, i);
+                }
             }
         }
         yVal += yTickInterval;
@@ -398,20 +484,20 @@ function drawTicks() {
 // draw background grid
 function drawBgGrid() {
     for (let i = 0; i < xTickLocations.length; i++) {
-        if (xTickLocations[i] == xAxisLocation) continue;
+        if (xTickLocations[i] == yAxisLocation) continue;
         ctx.strokeStyle = "rgb(180,180,180)";
         ctx.beginPath();
-        ctx.moveTo(xTickLocations[i], (0 + padding));
-        ctx.lineTo(xTickLocations[i] + lineWidth, (canvas.height - padding));
+        ctx.moveTo(xTickLocations[i], (0 + padding + tickOffset));
+        ctx.lineTo(xTickLocations[i] + lineWidth / 2, (canvas.height - padding - tickOffset));
         ctx.stroke();
     }
     
     for (let j = 0; j < yTickLocations.length; j++) {
-        if (yTickLocations[j] == yAxisLocation) continue;
+        if (yTickLocations[j] == xAxisLocation) continue;
         ctx.strokeStyle = "rgb(180,180,180)";
         ctx.beginPath();
-        ctx.moveTo((0 + padding), yTickLocations[j]);
-        ctx.lineTo((canvas.width - padding), yTickLocations[j] + lineWidth);
+        ctx.moveTo((0 + padding + tickOffset), yTickLocations[j]);
+        ctx.lineTo((canvas.width - padding - tickOffset), yTickLocations[j] + lineWidth / 2);
         ctx.stroke();
     }
 }
@@ -425,5 +511,9 @@ function drawLabels() {
     ctx.fillText(xLabel.value, centerX + xRadius, xAxisLocation + tickLength);
     ctx.textAlign = "left";
     //ctx.fillText(yLabel.value, yAxisLocation + tickLength, centerY - yRadius + 10);
-    ctx.fillText(yLabel.value, yAxisLocation + tickLength, centerY - yRadius);
+    if(xMax.value<=0){
+        ctx.fillText(yLabel.value, yAxisLocation -  7.5*yLabel.value.length, centerY - yRadius);
+    }else{
+        ctx.fillText(yLabel.value, yAxisLocation + tickLength, centerY - yRadius);
+    }
 }
