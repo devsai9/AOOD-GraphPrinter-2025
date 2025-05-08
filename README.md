@@ -4,7 +4,7 @@ This tool is intended for math teachers to assist
 in making graphs that can be copied onto worksheets,
 inspired by our product owner Mr. Panzarella 
 ([christopher_panzarella@hcpss.org](mailto:christopher_panzarella@hcpss.org))
-for whom we are grateful for his guidance and feedback/
+for whom we are grateful for his guidance and feedback.
 
 
 Implemented features include:
@@ -31,6 +31,7 @@ Developers:
 * Albert Cao, on moving axes, radian and tick labels
 * Tommy Diep, on arrows and axes labels
 * Emily Wu, on frontend, quadrant jumping and label/arrow alignment
+
 All developers contributed equally to the project.
 
 Developed as part of Centennial High School's Advanced Object-Oriented Design GT Class.
