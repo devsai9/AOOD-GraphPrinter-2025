@@ -6,6 +6,7 @@ inspired by our product owner Mr. Panzarella
 ([christopher_panzarella@hcpss.org](mailto:christopher_panzarella@hcpss.org))
 for whom we are grateful for his guidance and feedback.
 
+The tool can be accessed at [https://abeot.github.io/AOOD-GraphingPrinter-2025/](https://abeot.github.io/AOOD-GraphingPrinter-2025/).
 
 Implemented features include:
 * Adjustable minimum and maximum bound for both x and y axes
@@ -15,6 +16,7 @@ Implemented features include:
 * Options to show intervals in terms of π
 * Toggleable background grid
 * Buttons to quickly switch to certain quadrants
+* Changing font size of labels
 
 Known issues/bugs:
 * Viewing quadrant 3 and similar areas may result in labels
