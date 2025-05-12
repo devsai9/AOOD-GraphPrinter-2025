@@ -15,6 +15,9 @@ let xRadius = canvas.width * dpr / 2 - padding;
 let yRadius = canvas.height * dpr / 2 - padding;
 let centerX = canvas.width * dpr / 2;
 let centerY = canvas.height * dpr / 2;
+let fontSize = 16;
+
+let overlay = null;
 
 // Global (mathematical) variables
 let xAxisLocation = 0;
@@ -51,6 +54,7 @@ const gridLinesCheckbox = document.getElementById("gridCheckbox");
 const radianCheckboxX = document.getElementById("radianCheckboxX");
 const radianCheckboxY = document.getElementById("radianCheckboxY");
 
+const fontSizeInput = document.getElementById("font-size");
 
 
 // Event listeners
@@ -71,6 +75,24 @@ quadrant14Btn.addEventListener("click", function(){
 // Function
 update();
 function update() {
+    
+    if (window.innerWidth <= 500) {
+        if (!overlay) {
+            overlay = document.createElement("div")
+            overlay.innerHTML = "Screen too small...<br>Enlarge your screen, please";
+            overlay.style.textAlign = "center";
+            overlay.style.width = "100vw";
+            overlay.style.height = "100vh";
+            overlay.style.display = "flex";
+            overlay.style.justifyContent = "center";
+            overlay.style.alignItems = "center";
+            document.body.appendChild(overlay);
+        }
+        overlay.style.display = "flex";
+    } else {
+        if (overlay) overlay.style.display = "none";
+    }
+    fontSize = parseInt(fontSizeInput.value);
     if (parseFloat(xTicks.value) < 0) xTicks.value = "1";
     if (parseFloat(yTicks.value) < 0) yTicks.value = "1";
     if (parseFloat(xAnnotate.value) < 0) xAnnotate.value = "1";
@@ -172,34 +194,33 @@ function drawArrows(){
     if (yMin.value >= 0) {
         // Right Arrow
         ctx.beginPath();
-        ctx.moveTo(centerX + xRadius + arrowSize, 2 * centerY - padding - tickOffset);
-        ctx.lineTo(centerX + xRadius, 2 * centerY - arrowSize - padding - tickOffset);
-        ctx.lineTo(centerX + xRadius, 2 * centerY + arrowSize - padding - tickOffset);
+        ctx.moveTo(centerX + xRadius+.5, centerY + yRadius - tickOffset + 0.5);
+        ctx.lineTo(centerX + xRadius - arrowSize+.5, centerY + yRadius - arrowSize - tickOffset + 0.5);
+        ctx.lineTo(centerX + xRadius - arrowSize+.5, centerY + yRadius + arrowSize - tickOffset + 0.5);
         ctx.fill();
         // Left Arrow
         ctx.beginPath();
-        ctx.moveTo(centerX - xRadius - arrowSize, 2 * centerY - tickOffset);
-        ctx.lineTo(centerX - xRadius, 2 * centerY - arrowSize - tickOffset);
-        ctx.lineTo(centerX - xRadius, 2 * centerY + arrowSize - tickOffset);
+        ctx.moveTo(centerX - xRadius +.5, centerY + yRadius - tickOffset + 0.5);
+        ctx.lineTo(centerX - xRadius + arrowSize+.5, centerY + yRadius - arrowSize - tickOffset + 0.5);
+        ctx.lineTo(centerX - xRadius + arrowSize+.5, centerY + yRadius + arrowSize - tickOffset + 0.5);
         ctx.fill();
     }
     else if (yMax.value <= 0) {
         // Right Arrow
         ctx.beginPath();
-        ctx.moveTo(centerX + xRadius + arrowSize, centerY - yRadius + tickOffset);
-        ctx.lineTo(centerX + xRadius, centerY - yRadius - arrowSize + tickOffset);
-        ctx.lineTo(centerX + xRadius, centerY - yRadius + arrowSize + tickOffset);
+        ctx.moveTo(centerX + xRadius+.5, centerY - yRadius + tickOffset + .5);
+        ctx.lineTo(centerX + xRadius - arrowSize+.5, centerY - yRadius - arrowSize + tickOffset + .5);
+        ctx.lineTo(centerX + xRadius - arrowSize+.5, centerY - yRadius + arrowSize + tickOffset + .5);
         ctx.fill();
         // Left Arrow
         ctx.beginPath();
-        ctx.moveTo(centerX - xRadius - arrowSize, centerY - yRadius + tickOffset);
-        ctx.lineTo(centerX - xRadius, centerY - yRadius - arrowSize + tickOffset);
-        ctx.lineTo(centerX - xRadius, centerY - yRadius + arrowSize + tickOffset);
+        ctx.moveTo(centerX - xRadius+.5, centerY - yRadius + tickOffset + .5);
+        ctx.lineTo(centerX - xRadius + arrowSize+.5, centerY - yRadius - arrowSize + tickOffset + .5);
+        ctx.lineTo(centerX - xRadius + arrowSize+.5, centerY - yRadius + arrowSize + tickOffset + .5);
         ctx.fill();
     }
     
-    // yMax.value * (yRadius - tickOffset) * 2 / (yMax.value - yMin.value) + tickOffset + padding
-    // 
+    
     
     else {
         // Right Arrow
@@ -214,19 +235,6 @@ function drawArrows(){
         ctx.lineTo(centerX - xRadius, yMax.value * (yRadius -  tickOffset) * 2 / (yMax.value - yMin.value) - arrowSize + tickOffset + padding);
         ctx.lineTo(centerX - xRadius, yMax.value * (yRadius -  tickOffset) * 2 / (yMax.value - yMin.value) + arrowSize + tickOffset + padding);
         ctx.fill();
-        
-        // // Right Arrow
-        // ctx.beginPath();
-        // ctx.moveTo(centerX + xRadius + arrowSize, yMax.value * (yRadius + padding - tickOffset) * 2 / (yMax.value - yMin.value) + tickOffset + padding);
-        // ctx.lineTo(centerX + xRadius, yMax.value * (yRadius + padding - tickOffset) * 2 / (yMax.value - yMin.value) - arrowSize + tickOffset + padding);
-        // ctx.lineTo(centerX + xRadius, yMax.value * (yRadius + padding - tickOffset) * 2 / (yMax.value - yMin.value) + arrowSize + tickOffset + padding);
-        // ctx.fill();
-        // // Left Arrow
-        // ctx.beginPath();
-        // ctx.moveTo(centerX - xRadius - arrowSize, yMax.value * (yRadius + padding) * 2 / (yMax.value - yMin.value));
-        // ctx.lineTo(centerX - xRadius, yMax.value * (yRadius + padding) * 2 / (yMax.value - yMin.value) - arrowSize);
-        // ctx.lineTo(centerX - xRadius, yMax.value * (yRadius + padding) * 2 / (yMax.value - yMin.value) + arrowSize);
-        // ctx.fill();
     }
     
     
@@ -249,15 +257,15 @@ function drawArrows(){
     else if (xMax.value <= 0) {
         // Top Arrow
         ctx.beginPath();
-        ctx.moveTo(centerX + xRadius - tickOffset, centerY - yRadius);
-        ctx.lineTo(centerX + xRadius - arrowSize - tickOffset, centerY - yRadius + arrowSize);
-        ctx.lineTo(centerX + xRadius + arrowSize - tickOffset, centerY - yRadius + arrowSize);
+        ctx.moveTo(centerX + xRadius - tickOffset + 0.5, centerY - yRadius + 0.5);
+        ctx.lineTo(centerX + xRadius - arrowSize - tickOffset + 0.5, centerY - yRadius + arrowSize + 0.5);
+        ctx.lineTo(centerX + xRadius + arrowSize - tickOffset + 0.5, centerY - yRadius + arrowSize + 0.5);
         ctx.fill();
         // Bottom Arrow
         ctx.beginPath();
-        ctx.moveTo(centerX + xRadius - tickOffset, centerY + yRadius);
-        ctx.lineTo(centerX + xRadius - arrowSize - tickOffset, centerY + yRadius - arrowSize);
-        ctx.lineTo(centerX + xRadius + arrowSize - tickOffset, centerY + yRadius - arrowSize);
+        ctx.moveTo(centerX + xRadius - tickOffset + 0.5, centerY + yRadius + 0.5);
+        ctx.lineTo(centerX + xRadius - arrowSize - tickOffset + 0.5, centerY + yRadius - arrowSize + 0.5);
+        ctx.lineTo(centerX + xRadius + arrowSize - tickOffset + 0.5, centerY + yRadius - arrowSize + 0.5);
         ctx.fill();
     }
     
@@ -397,11 +405,17 @@ function drawTicks() {
             // console.log("residue at ", curX, ": ", residue);
             if (residue <= 0.001 && !onAxis) {
                 ctx.textAlign = "center";
-                ctx.font = (canvas.width * 0.05)+"px serif";
-                if((canvas.width * 0.05)>=20){
-                    ctx.font = "20px serif";
-                }
+                // ctx.font = (canvas.width * 0.05)+"px serif";
+                // if((canvas.width * 0.05)>=20){
+                //     ctx.font = "20px serif";
+                // }
+                ctx.font = (fontSize)+"px serif";
                 if (radianCheckboxX.checked) {
+                    
+                    document.querySelectorAll('.x-pi').forEach((elem) => {
+                        elem.style.display = "inline-block";
+                    });
+                    
                     let numerator = Math.round(xVal * 1000);
                     let denominator = 1000;
                     let d = gcd(numerator, denominator);
@@ -423,6 +437,10 @@ function drawTicks() {
                     ctx.fillText(text, i, xAxisLocation - tickLength);
                 } else {
                     ctx.fillText(Math.round(xVal * 1000) / 1000, i, xAxisLocation - tickLength);
+                    
+                    document.querySelectorAll('.x-pi').forEach((elem) => {
+                        elem.style.display = "none";
+                    });
                 }
                 // console.log("label drawn at ", curX);
             }
@@ -506,14 +524,15 @@ function drawBgGrid() {
 function drawLabels() {
     ctx.fillStyle = "rgb(0,0,0)";
     // axes are at xAxisLocation, yAxisLocation
-    ctx.font = "16px serif";
+    // ctx.font = "16px serif";
+    ctx.font = (fontSize)+"px serif";
     ctx.textAlign = "right";
     ctx.fillText(xLabel.value, centerX + xRadius, xAxisLocation + tickLength);
     ctx.textAlign = "left";
     //ctx.fillText(yLabel.value, yAxisLocation + tickLength, centerY - yRadius + 10);
     if(xMax.value<=0){
-        ctx.fillText(yLabel.value, yAxisLocation -  7.5*yLabel.value.length, centerY - yRadius);
+        ctx.fillText(yLabel.value, yAxisLocation -  8*yLabel.value.length, centerY - yRadius);
     }else{
-        ctx.fillText(yLabel.value, yAxisLocation + tickLength, centerY - yRadius);
+        ctx.fillText(yLabel.value, yAxisLocation + tickLength + 10, centerY - yRadius);
     }
 }
