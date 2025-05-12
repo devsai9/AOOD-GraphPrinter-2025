@@ -15,6 +15,7 @@ Implemented features include:
 * Options to show intervals in terms of π
 * Toggleable background grid
 * Buttons to quickly switch to certain quadrants
+* Changing font size of labels
 
 Known issues/bugs:
 * Viewing quadrant 3 and similar areas may result in labels
