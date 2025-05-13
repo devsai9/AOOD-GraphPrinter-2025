@@ -14,12 +14,6 @@ body {
     overflow: hidden;
 }
 
-@media (max-width: 500px) {
-    body {
-        display: none;
-    }
-}
-
 h1 {
     padding: 0;
     margin: 0;
@@ -27,6 +21,12 @@ h1 {
 
 main {
     display: flex;
+}
+
+@media (max-width: 500px) {
+    main {
+        display: none;
+    }
 }
 
 .panel {
@@ -49,6 +49,7 @@ main {
 }
 
 #config-wrapper {
+    min-width: 275px;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -85,6 +86,10 @@ button {
 
 button:hover {
     background: #d3d3d3;
+}
+
+.x-pi, .y-pi {
+    display: none;
 }
 
 /* Custom checkbox */

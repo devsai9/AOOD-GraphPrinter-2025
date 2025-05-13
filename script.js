@@ -470,6 +470,11 @@ function drawTicks() {
                 
                 
                 if (radianCheckboxY.checked) {
+                    
+                    document.querySelectorAll('.y-pi').forEach((elem) => {
+                        elem.style.display = "inline-block";
+                    });
+                    
                     let numerator = Math.round(yVal * 1000);
                     let denominator = 1000;
                     let d = gcd(numerator, denominator);
@@ -492,6 +497,10 @@ function drawTicks() {
                     ctx.fillText(text, yAxisLocation + tickLength, i);
                 } else {
                     ctx.fillText(Math.round(yVal * 1000) / 1000, yAxisLocation + tickLength, i);
+                    
+                    document.querySelectorAll('.y-pi').forEach((elem) => {
+                        elem.style.display = "none";
+                    });
                 }
             }
         }
