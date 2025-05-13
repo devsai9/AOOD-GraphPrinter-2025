@@ -1,26 +1,26 @@
 # Grapher Printer
 
-This tool is intended for math teachers to assist
-in making graphs that can be copied onto worksheets,
-inspired by our product owner Mr. Panzarella 
-([christopher_panzarella@hcpss.org](mailto:christopher_panzarella@hcpss.org))
-for whom we are grateful for his guidance and feedback.
+This tool is intended for math teachers to assist in making graphs that can be copied onto worksheets, inspired by our product owner Mr. Panzarella ([christopher_panzarella@hcpss.org](mailto:christopher_panzarella@hcpss.org)) for whom we are grateful for his guidance and feedback.
 
-The tool can be accessed at [https://abeot.github.io/AOOD-GraphingPrinter-2025/](https://abeot.github.io/AOOD-GraphingPrinter-2025/).
+The tool can be accessed at [https://devsai9.github.io/AOOD-GraphingPrinter-2025/](https://devsai9.github.io/AOOD-GraphingPrinter-2025/).
 
 Implemented features include:
+* Two panels, one where the adjustable settings and the other where the graph is created
 * Adjustable minimum and maximum bound for both x and y axes
 * Adjustable intervals for ticks for the axes, including support for decimals
 * Option to include arrows on axes to signify an infinite graph
-* Adjustable intervals for annotations (labels) for the axes
+* Adjustable intervals for annotations (labels/tick labels) for the axes
+* Customizable x and y axis labels
 * Options to show intervals in terms of π
 * Toggleable background grid
 * Buttons to quickly switch to certain quadrants
 * Changing font size of labels
+* The website does not allow window to be so small the graph is unreadable
 
 Known issues/bugs:
 * Viewing quadrant 3 and similar areas may result in labels
 going off the screen
+* If there are too many ticks then the number labels will overlap each other
 
 Features not yet implemented:
 * Option to resize the viewing window
