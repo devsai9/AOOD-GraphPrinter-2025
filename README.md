@@ -5,7 +5,7 @@ Graph Printer is a tool that can be used by math teachers in order to display or
 
 This tool was nspired by our product owner Mr. Panzarella ([christopher_panzarella@hcpss.org](mailto:christopher_panzarella@hcpss.org)) for whom we are grateful for his guidance and feedback.
 
-The tool can be accessed at [https://devsai9.github.io/AOOD-GraphingPrinter-2025/](https://devsai9.github.io/AOOD-GraphingPrinter-2025/).
+The tool can be accessed at [https://devsai9.github.io/AOOD-GraphPrinter-2025/](https://devsai9.github.io/AOOD-GraphPrinter-2025/).
 
 Implemented features include:
 * Two panels, one where the adjustable settings and the other where the graph is created
