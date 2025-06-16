@@ -1,6 +1,9 @@
-# Grapher Printer
+# Graph Printer
+<ins>**Graph printer for teachers**</ins>
 
-This tool is intended for math teachers to assist in making graphs that can be copied onto worksheets, inspired by our product owner Mr. Panzarella ([christopher_panzarella@hcpss.org](mailto:christopher_panzarella@hcpss.org)) for whom we are grateful for his guidance and feedback.
+Graph Printer is a tool that can be used by math teachers in order to display or print graphs that can be copied onto worksheets or projected during class for their students. The window and ticks can be adjusted, and there are also options to customize the graph, including support for units in terms of pi. Simply adjust settings and save the graph to be used on any worksheet.
+
+This tool was nspired by our product owner Mr. Panzarella ([christopher_panzarella@hcpss.org](mailto:christopher_panzarella@hcpss.org)) for whom we are grateful for his guidance and feedback.
 
 The tool can be accessed at [https://devsai9.github.io/AOOD-GraphingPrinter-2025/](https://devsai9.github.io/AOOD-GraphingPrinter-2025/).
 
